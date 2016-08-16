@@ -78,12 +78,6 @@ def create_children(board, turn):
         tree.append(board_copy)
     return list(tree)
 
-def last_child(child, turn):
-    if len(create_children(child, turn)) == 0:
-        return True
-    else:
-        return False
-
 def bf_creator(root, turn):
     tree = []
     queue = [(tree, root, turn)]
@@ -98,14 +92,17 @@ def bf_creator(root, turn):
             queue.append((elem[0][-1], child, tmp_turn))
     return tree
 
-"""def leaves(tree):
-    turn = "O"
+def leaves(tree):
     last_children = []
-
-    turn = "O" if turn == "X" else "X"
-    if last_child(child, turn):
-        last_children.append(child)
-
+    queue = [tree]
+    while queue != []:
+        elem = queue[0]
+        queue.remove(elem)
+        if len(elem) == 1:
+            last_children.append(elem[0])
+        elif len(elem) > 1:
+            for child in elem[1:]:
+                queue.append(child)
     return last_children
 
 tree = bf_creator(['O','X','O',"O",'X','O',7 , 8, 9], 'O')
@@ -114,7 +111,7 @@ for t in tree:
 
 print("\nlast_children: ")
 for i in leaves(tree):
-    print(i)"""
+    print(i)
 
 def ai_play():
     #where_ai()
