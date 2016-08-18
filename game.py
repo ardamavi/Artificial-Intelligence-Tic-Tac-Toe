@@ -5,18 +5,11 @@
 from subprocess import call
 from random import randint
 
-# Variables :
-board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-tree = [board, [], []]
-win = "Yet_None"
-exit_game = False
-order = "O"
-
 # Functions :
 def clear_screan():
     call(["clear"])
 
-def print_board(this_board = board):
+def print_board(this_board):
     print("\n  "+ str(this_board[0]), "|", str(this_board[1]), "|", str(this_board[2]))
     print("  - | - | -")
     print("  "+ str(this_board[3]), "|", str(this_board[4]), "|", str(this_board[5]))
@@ -36,19 +29,19 @@ def who_win(this_board):
     # Horizontal
     for i in range(0,7,3):
         if (this_board[i] == 'X' and this_board[i+1] == 'X' and this_board[i+2] == 'X') or (this_board[i] == 'O' and this_board[i+1] == 'O' and this_board[i+2] == 'O'):
-            return board[i+1]
+            return this_board[i+1]
 
     # Vertical
     for i in range(3):
         if (this_board[i] == 'X' and this_board[i+3] == 'X' and this_board[i+6] == 'X') or (this_board[i] == 'O' and this_board[i+3] == 'O' and this_board[i+6] == 'O'):
-            return board[i+3]
+            return this_board[i+3]
 
     # Cross
     if (this_board[0] == 'X' and this_board[4] == 'X' and this_board[8] == 'X') or (this_board[0] == 'O' and this_board[4] == 'O' and this_board[8] == 'O'):
-        return board[4]
+        return this_board[4]
 
     if (this_board[2] == 'X' and this_board[4] == 'X' and this_board[6] == 'X') or (this_board[2] == 'O' and this_board[4] == 'O' and this_board[6] == 'O'):
-        return board[4]
+        return this_board[4]
 
     return "Yet_None"
 
@@ -100,28 +93,25 @@ def leaves(tree):
                 queue.append(child)
     return last_children
 
-def where_ai(this_tree):
+def play_ai(this_tree, board):
     probabilities = []
-
     for i in this_tree[1:]:
-        leaves = leaves(i)
+        all_leaves = leaves(i)
         count = 0
-        for leave in leaves:
-            if who_win(leave) == "X":
-                count += 1
-            elif who_win(leave) == "O":
+        for leaf in all_leaves:
+            if who_win(leaf) == "X":
                 count -= 1
-        probabilities.append([count/len(leaves), i[0]])
+            elif who_win(leaf) == "O":
+                count += 1
+        probabilities.append([count/len(all_leaves), i[0]])
 
     bigger = [-10000, []]
     for i in probabilities:
         if i[0] > bigger[0]:
             bigger = i
-
     return bigger[1]
 
-def play_game(inpt):
-    global board
+def play_game(inpt, board, tree):
     board[inpt-1] = "X"
     if who_win(board) == "Yet_None":
         play_len = 0
@@ -129,38 +119,46 @@ def play_game(inpt):
             if board[i] == "X" or board[i] == "O":
                 play_len += 1
         if play_len <= 1:
-            bf_creator(board, "O")
+            tree = bf_creator(board, "O")
         else:
-            for i in tree[1:]:
-                if i[0] == board:
-                    tree = i
-                    break
-        board = where_ai(tree)
+            for j in tree[1:]:
+                for i in j[1:]:
+                    if i[0] == board:
+                        tree = i
+                        break
+        board = play_ai(tree, board)
+    return board, tree
 
-# Main :
-clear_screan()
-print("Artificial Intelligence Tic Tac Toe\nArda Mavi - ardamavi.com\nExit Game: 0")
-win = "Yet_None"
-order = "O"
+def main():
+    board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    tree = [board, [], []]
+    win = "Yet_None"
+    exit_game = False
+    order = "O"
 
-while win == "Yet_None":
-    print_board()
-
-    while True:
-        inpt = input("X's turn: ")
-        if int(inpt) == 0:
-            win = "None"
-            break
-        elif is_free(board, int(inpt)):
-            play_game(int(inpt))
-            win = who_win(board)
-            break
-        else:
-            clear_screan()
-            print("Try Again !")
-            print_board()
     clear_screan()
-clear_screan()
-print_board()
-print("Win: " + win)
-print("Arda Mavi - ardamavi.com\nThe End !\n")
+    print("Artificial Intelligence Tic Tac Toe\nArda Mavi - ardamavi.com\nExit Game: 0")
+
+    while win == "Yet_None":
+        print_board(board)
+
+        while True:
+            inpt = input("X's turn: ")
+            if int(inpt) == 0:
+                win = "None"
+                break
+            elif is_free(board, int(inpt)):
+                board, tree = play_game(int(inpt), board, tree)
+                win = who_win(board)
+                break
+            else:
+                clear_screan()
+                print("Try Again !")
+                print_board(board)
+        clear_screan()
+    clear_screan()
+    print_board(board)
+    print("Win: " + win)
+    print("Arda Mavi - ardamavi.com\nThe End !\n")
+
+main()
