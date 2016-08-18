@@ -28,7 +28,6 @@ def is_free(this_board, inpt):
 def who_win(this_board):
     # Horizontal
     for i in range(0,7,3):
-        print(i)
         if (this_board[i] == 'X' and this_board[i+1] == 'X' and this_board[i+2] == 'X') or (this_board[i] == 'O' and this_board[i+1] == 'O' and this_board[i+2] == 'O'):
             return this_board[i+1]
 
