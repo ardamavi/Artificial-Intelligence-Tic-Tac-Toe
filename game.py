@@ -103,7 +103,12 @@ def play_ai(this_tree, board):
                 count -= 3.1
             elif who_win(leaf) == "O":
                 count += 1
-        probabilities.append([count/len(all_leaves), i[0]])
+        not_append = False
+        for a in i[1:]:
+            if who_win(a[0]) == "X":
+                not_append = True
+        if not_append == False:
+            probabilities.append([count/len(all_leaves), i[0]])
 
     bigger = [-10000, []]
     for i in probabilities:
@@ -113,7 +118,7 @@ def play_ai(this_tree, board):
 
 def play_game(inpt, board, tree):
     board[inpt-1] = "X"
-    if who_win(board) == "Yet_None":
+    if is_finish(board) == False:
         play_len = 0
         for i in range(0,9):
             if board[i] == "X" or board[i] == "O":
@@ -149,13 +154,19 @@ def main():
                 break
             elif is_free(board, int(inpt)):
                 board, tree = play_game(int(inpt), board, tree)
-                win = who_win(board)
+                if is_finish(board):
+                    win = who_win(board)
                 break
             else:
                 clear_screan()
                 print("Try Again !")
                 print_board(board)
         clear_screan()
+        if is_finish(board) == True:
+            win = who_win(board)
+            if win == "Yet_None":
+                win = "None"
+            break
     clear_screan()
     print_board(board)
     print("Win: " + win)
