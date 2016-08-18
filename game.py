@@ -23,11 +23,6 @@ def print_board(this_board = board):
     print("  - | - | -")
     print("  "+ str(this_board[6]), "|", str(this_board[7]), "|", str(this_board[8]), "\n")
 
-def start_settings():
-    board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    win = "Yet_None"
-    order = "O"
-
 def is_free(this_board, inpt):
     if this_board[inpt-1] == "X" or this_board[inpt-1] == "O":
         return False
@@ -105,36 +100,50 @@ def leaves(tree):
                 queue.append(child)
     return last_children
 
-tree = bf_creator(['O','X','O',"O",'X','O',7 , 8, 9], 'O')
-for t in tree:
-    print(t)
+def where_ai(this_tree):
+    probabilities = []
 
-print("\nlast_children: ")
-for i in leaves(tree):
-    print(i)
+    for i in this_tree[1:]:
+        leaves = leaves(i)
+        count = 0
+        for leave in leaves:
+            if who_win(leave) == "X":
+                count += 1
+            elif who_win(leave) == "O":
+                count -= 1
+        probabilities.append([count/len(leaves), i[0]])
 
-def ai_play():
-    #where_ai()
-    board[0] = "O"
+    bigger = [-10000, []]
+    for i in probabilities:
+        if i[0] > bigger[0]:
+            bigger = i
+
+    return bigger[1]
 
 def play_game(inpt):
-        board[inpt-1] = "X"
-        if who_win(board) == "Yet_None":
-            play_len = 0
-            for i in range(0,9):
-                if board[i] == "X" or board[i] == "O":
-                    play_len += 1
-            if play_len <= 1:
-                bf_creator(board, "O")
-            ai_play()
-"""
+    global board
+    board[inpt-1] = "X"
+    if who_win(board) == "Yet_None":
+        play_len = 0
+        for i in range(0,9):
+            if board[i] == "X" or board[i] == "O":
+                play_len += 1
+        if play_len <= 1:
+            bf_creator(board, "O")
+        else:
+            for i in tree[1:]:
+                if i[0] == board:
+                    tree = i
+                    break
+        board = where_ai(tree)
+
 # Main :
 clear_screan()
 print("Artificial Intelligence Tic Tac Toe\nArda Mavi - ardamavi.com\nExit Game: 0")
-start_settings()
+win = "Yet_None"
+order = "O"
 
 while win == "Yet_None":
-    clear_screan()
     print_board()
 
     while True:
@@ -150,9 +159,8 @@ while win == "Yet_None":
             clear_screan()
             print("Try Again !")
             print_board()
-
+    clear_screan()
 clear_screan()
 print_board()
 print("Win: " + win)
 print("Arda Mavi - ardamavi.com\nThe End !\n")
-"""
