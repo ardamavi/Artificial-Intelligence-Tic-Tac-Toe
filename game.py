@@ -107,11 +107,6 @@ def play_ai(this_tree, board):
         for a in i[1:]:
             if who_win(a[0]) == "X" and probabilities != []:
                 not_append = True
-        for k in i[1:]:
-            all_leaves2 = leaves(k)
-            for leaf2 in all_leaves:
-                if who_win(leaf2) == "X" and probabilities != []:
-                    not_append = True
         if not_append == False:
             probabilities.append([count/len(all_leaves), i[0]])
 
