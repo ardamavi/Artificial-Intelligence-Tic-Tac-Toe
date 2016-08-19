@@ -100,13 +100,17 @@ def play_ai(this_tree, board):
         count = 0
         for leaf in all_leaves:
             if who_win(leaf) == "X":
-                count -= 3.1
+                count -= 100
             elif who_win(leaf) == "O":
                 count += 1
+
         not_append = False
-        for a in i[1:]:
-            if who_win(a[0]) == "X" and probabilities != []:
-                not_append = True
+        if probabilities != []:
+            for a in i[1:]:
+                if who_win(a[0]) == "X" and probabilities != []:
+                    not_append = True
+                    break
+
         if not_append == False:
             probabilities.append([count/len(all_leaves), i[0]])
 
