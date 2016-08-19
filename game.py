@@ -20,10 +20,7 @@ def is_free(this_board, inpt):
     if this_board[inpt-1] == "X" or this_board[inpt-1] == "O":
         return False
     else:
-        if int(inpt) > 0 and int(inpt) <= 9:
-            return True
-        else:
-            return False
+        return True
 
 def who_win(this_board):
     # Horizontal
@@ -138,6 +135,11 @@ def play_game(inpt, board, tree):
         board = play_ai(tree, board)
     return board, tree
 
+def print_try_again(board):
+    clear_screan()
+    print("Try Again !")
+    print_board(board)
+
 def main():
     board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     tree = [board, [], []]
@@ -153,18 +155,24 @@ def main():
 
         while True:
             inpt = input("X's turn: ")
-            if int(inpt) == 0:
-                win = "None"
-                break
-            elif is_free(board, int(inpt)):
-                board, tree = play_game(int(inpt), board, tree)
-                if is_finish(board):
-                    win = who_win(board)
-                break
-            else:
-                clear_screan()
-                print("Try Again !")
-                print_board(board)
+            try:
+                inpt = int(inpt)
+                if inpt > 0 and inpt <= 9:
+                    if inpt == 0:
+                        win = "None"
+                        break
+                    elif is_free(board, int(inpt)):
+                        board, tree = play_game(int(inpt), board, tree)
+                        if is_finish(board):
+                            win = who_win(board)
+                        break
+                    else:
+                        print("this")
+                        print_try_again(board)
+                else:
+                    print_try_again(board)
+            except:
+                print_try_again(board)
         clear_screan()
         if is_finish(board) == True:
             win = who_win(board)
