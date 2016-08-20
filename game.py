@@ -2,12 +2,15 @@
 # Artificial Intelligence Tic Tac Toe
 
 # Imports :
-from subprocess import call
-from random import randint
+import os # for clearing screan
+import platform # for Check what OS you running on
 
 # Functions :
 def clear_screan():
-    call(["clear"])
+    if platform.system() == "Windows":
+        os.system('cls')  # on windows
+    else:
+        os.system('clear') # on linux / os x
 
 def print_board(this_board):
     print("\n  "+ str(this_board[0]), "|", str(this_board[1]), "|", str(this_board[2]))
