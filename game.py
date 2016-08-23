@@ -93,7 +93,7 @@ def leaves(tree):
                 queue.append(child)
     return last_children
 
-def play_ai(this_tree, board):
+def probability(this_tree):
     probabilities = []
     for i in this_tree[1:]:
         all_leaves = leaves(i)
@@ -113,10 +113,14 @@ def play_ai(this_tree, board):
 
         if not_append == False:
             probabilities.append([count/len(all_leaves), i[0]])
+    return probabilities
 
-    bigger = [-10000, []]
-    for i in probabilities:
-        if i[0] > bigger[0]:
+def play_ai(this_tree, board):
+    bigger = []
+    for i in probability(this_tree):
+        if bigger == []:
+            bigger = i
+        elif i[0] > bigger[0]:
             bigger = i
     return bigger[1]
 
